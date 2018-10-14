@@ -3,11 +3,6 @@ import Menu from './Menu.js';
 import Slide from './Slide.js';
 import './App.css';
 
-let state = {
-  pageNum: 0,
-  slides: ["aaa","bbb","ccc","ddd"]
-}
-
 class App extends Component {
   constructor(props){
     super(props);
@@ -17,6 +12,13 @@ class App extends Component {
     }
     this.addPageNum = this.addPageNum.bind(this);
     this.subPageNum = this.subPageNum.bind(this);
+    this.onKeyPressed = this.onKeyPressed.bind(this);
+  }
+  componentDidMount(){
+    document.addEventListener("keydown",this.onKeyPressed);
+  }
+  componentWillUnmount(){
+    document.removeEventListener("keydown",this.onKeyPressed);
   }
   addPageNum(){
     const nowPageNum = this.state.pageNum;
@@ -26,9 +28,13 @@ class App extends Component {
     const nowPageNum = this.state.pageNum;
     this.setState({pageNum:nowPageNum-1})
   }
+  onKeyPressed(event){
+    if(event.key === "ArrowRight") this.addPageNum();
+    else if(event.key === "ArrowLeft") this.subPageNum();
+  }
   render() {
     return (
-      <div className="App">
+      <div className="App" onKeyDown={this.onKeyPressed} tabIndex="0">
         <Menu onClickNext={this.addPageNum} onClickPrev={this.subPageNum}/>
         <Slide text={this.state.slides[this.state.pageNum]}/>
       </div>
